@@ -25,9 +25,12 @@ StrucData = {}
 # Read all files in the folder
 path = r'J:/IRSST_DavidsTea/Raw_Data/' + Participants[iP] + '/EMG'
 for iFiles, files in enumerate(glob.glob(path+"/**c3d")):
+    start = time.time()
     data = pyomeca.Analogs.from_c3d(files, usecols=Raw_Muscles_Names)
+    end = time.time()
+    print('Time to load c3d', end-start)
     TrialName = 'Trial' + str(iFiles)
-    StrucData[TrialName] = {x.split(".")[0]: list(y) for x, y in zip(Raw_Muscles_Names, zip(*data.data.transpose()))}
+    StrucData[TrialName] = {x.split(".")[0]: np.array(y) for x, y in zip(Raw_Muscles_Names, zip(*data.data.transpose()))}
 
     # Plot the wanted data
     if False:
@@ -45,7 +48,7 @@ for iFiles, files in enumerate(glob.glob(path+"/**c3d")):
 start = time.time()
 add_data_to_pickle(StrucData, "test_pick")
 end = time.time()
-print('Time to save data', end-start)
+print('Time to save pickle', end-start)
 
 # start = time.time()
 # with open('test_pick', 'rb') as f:
